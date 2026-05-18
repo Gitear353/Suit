@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="./node_modules/gsap/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        /* Simulated dark video scene — remove for transparent overlay render */
+        background: linear-gradient(160deg, #0d1520 0%, #111b28 60%, #0a0f18 100%);
+      }
+
+      #lt-container {
+        position: absolute;
+        left: 80px;
+        bottom: 88px;
+        display: flex;
+        align-items: stretch;
+      }
+
+      /* Dark bar — reveals left-to-right on enter via scaleX */
+      #lt-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(39, 168, 222, 0.12) 0%,
+          rgba(8, 11, 16, 0.88) 28%,
+          rgba(8, 11, 16, 0.88) 100%
+        );
+        transform-origin: left center;
+      }
+
+      /* Blue accent bar */
+      #lt-accent {
+        position: relative;
+        z-index: 2;
+        width: 4px;
+        flex-shrink: 0;
+        background: #27a8de;
+        transform-origin: center center;
+      }
+
+      /* Text */
+      #lt-text {
+        position: relative;
+        z-index: 2;
+        padding: 18px 40px 18px 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+      }
+
+      #lt-name {
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        font-size: 40px;
+        font-weight: 700;
+        color: #ffffff;
+        white-space: nowrap;
+        letter-spacing: -0.4px;
+        line-height: 1.1;
+      }
+
+      #lt-company {
+        font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+        color: #a5a8aa;
+        white-space: nowrap;
+        letter-spacing: 0.1px;
+        line-height: 1.2;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="lower-thirds"
+      data-start="0"
+      data-duration="5"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div
+        id="lt-container"
+        class="clip"
+        data-start="0"
+        data-duration="5"
+        data-track-index="1"
+      >
+        <div id="lt-bg"></div>
+        <div id="lt-accent"></div>
+        <div id="lt-text">
+          <div id="lt-name">Jane Smith</div>
+          <div id="lt-company">Director of Marketing · Acme Corp</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // — Entrance —
+      // Background bar reveals left to right
+      tl.from("#lt-bg", { scaleX: 0, duration: 0.55, ease: "expo.out" }, 0.1);
+      // Blue accent bar grows from center
+      tl.from("#lt-accent", { scaleY: 0, duration: 0.35, ease: "power3.out" }, 0.28);
+      // Name slides in from left and fades
+      tl.from("#lt-name", { x: -28, opacity: 0, duration: 0.4, ease: "power3.out" }, 0.38);
+      // Company follows slightly after
+      tl.from("#lt-company", { x: -20, opacity: 0, duration: 0.35, ease: "power2.out" }, 0.52);
+
+      // — Exit — whole lower third slides left and fades
+      tl.to("#lt-container", { x: -80, opacity: 0, duration: 0.45, ease: "power3.in" }, 4.15);
+
+      window.__timelines["lower-thirds"] = tl;
+    </script>
+  </body>
+</html>
