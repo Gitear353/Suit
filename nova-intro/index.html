@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hyperframes/core/dist/hyperframe.runtime.iife.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hyperframes/shader-transitions/dist/index.global.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,200;9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #080810;
+        --ink: #f0ede8;
+        --accent: #c8a96e;
+        --muted: #52506a;
+        --font-display: "Bebas Neue", sans-serif;
+        --font-body: "DM Sans", sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+      .scene-content {
+        width: 100%;
+        height: 100%;
+        padding: 100px 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 1;
+      }
+      .clip {}
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.15;
+        background-image:
+          radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.2px),
+          radial-gradient(rgba(0, 0, 0, 0.18) 1px, transparent 1.2px);
+        background-size: 3px 3px, 5px 5px;
+        background-position: 0 0, 1px 2px;
+        mix-blend-mode: overlay;
+      }
+      .vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 49;
+        background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.6) 100%);
+      }
+
+      /* ── Scene 1 ──────────────────────────────── */
+      .s1-glow-wrap {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+      #s1-glow {
+        width: 820px;
+        height: 820px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(200, 169, 110, 0.18) 0%, transparent 68%);
+      }
+
+      /* ── Scene 2 ──────────────────────────────── */
+      .s2-char {
+        font-family: var(--font-display);
+        font-size: 260px;
+        color: var(--ink);
+        display: inline-block;
+        line-height: 1.0;
+        letter-spacing: 0.06em;
+      }
+      #s2-line-svg {
+        width: 580px;
+        height: 6px;
+        overflow: visible;
+        display: block;
+      }
+      #s2-sub {
+        font-family: var(--font-body);
+        font-weight: 200;
+        font-size: 24px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* ── Scene 3 ──────────────────────────────── */
+      #s3-eyebrow {
+        font-family: var(--font-body);
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0.5em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      #s3-tagline {
+        font-family: var(--font-body);
+        font-weight: 200;
+        font-size: 68px;
+        line-height: 1.25;
+        color: var(--ink);
+        max-width: 900px;
+      }
+      #s3-accent-word {
+        color: var(--accent);
+        background: linear-gradient(var(--accent), var(--accent)) no-repeat 0 96% / 0% 2px;
+        padding-bottom: 4px;
+      }
+
+      /* ── Scene 4 ──────────────────────────────── */
+      #s4-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+      #s4-rule {
+        width: 56px;
+        height: 1px;
+        background: var(--accent);
+      }
+      #s4-wordmark {
+        font-family: var(--font-display);
+        font-size: 96px;
+        letter-spacing: 0.2em;
+        color: var(--ink);
+      }
+      #s4-sub {
+        font-family: var(--font-body);
+        font-weight: 200;
+        font-size: 18px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="main"
+      data-composition-id="main"
+      data-width="1920"
+      data-height="1080"
+      data-start="0"
+      data-duration="10"
+    >
+      <!-- Background music — supply music.mp3 in this folder; framework owns playback -->
+      <audio id="bg-music" src="./music.mp3" loop></audio>
+
+      <!-- ── Scene 1: atmospheric open (0–2s) ──────────────────── -->
+      <div class="scene clip" id="s1" data-start="0" data-duration="2" data-track-index="0">
+        <div class="s1-glow-wrap"><div id="s1-glow"></div></div>
+        <div class="vignette"></div>
+        <div class="grain"></div>
+        <div class="scene-content"></div>
+      </div>
+
+      <!-- ── Scene 2: title reveal (2–5.5s) — SHADER ANCHOR ─────── -->
+      <div
+        class="scene clip"
+        id="s2"
+        data-start="2"
+        data-duration="3.5"
+        data-track-index="0"
+        style="opacity:0;"
+      >
+        <div class="vignette"></div>
+        <div class="grain"></div>
+        <div class="scene-content">
+          <div id="s2-title-wrap">
+            <span class="s2-char">N</span><span class="s2-char">O</span><span class="s2-char">V</span><span class="s2-char">A</span>
+          </div>
+          <svg id="s2-line-svg" viewBox="0 0 580 6" preserveAspectRatio="none">
+            <line
+              id="s2-line"
+              x1="0" y1="3" x2="580" y2="3"
+              stroke="var(--accent)"
+              stroke-width="2"
+              stroke-dasharray="580"
+              stroke-dashoffset="580"
+              stroke-linecap="round"
+            />
+          </svg>
+          <p id="s2-sub">Designed for what's next</p>
+        </div>
+      </div>
+
+      <!-- ── Scene 3: tagline (5.5–8s) — SHADER ANCHOR ───────────── -->
+      <div
+        class="scene clip"
+        id="s3"
+        data-start="5.5"
+        data-duration="2.5"
+        data-track-index="0"
+        style="opacity:0;"
+      >
+        <div class="vignette"></div>
+        <div class="grain"></div>
+        <div class="scene-content">
+          <p id="s3-eyebrow">Introducing</p>
+          <p id="s3-tagline">The future of work,<br><span id="s3-accent-word">reimagined</span>.</p>
+        </div>
+      </div>
+
+      <!-- ── Scene 4: brand close (8–10s) ─────────────────────────── -->
+      <div
+        class="scene clip"
+        id="s4"
+        data-start="8"
+        data-duration="2"
+        data-track-index="0"
+        style="visibility:hidden;"
+      >
+        <div class="vignette"></div>
+        <div class="grain"></div>
+        <div class="scene-content" style="align-items:center; text-align:center;">
+          <div id="s4-inner">
+            <div id="s4-rule"></div>
+            <p id="s4-wordmark">NOVA</p>
+            <p id="s4-sub">Coming Soon &nbsp;·&nbsp; nova.co</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // ── Visibility toggles ──────────────────────────────────────────
+      tl.set("#s1", { autoAlpha: 0 }, 2.0);
+      tl.set("#s2", { opacity: 1 }, 2.0);   // first shader anchor — must be explicitly shown
+      // s3 is the second shader anchor — HyperShader manages it after transition fires
+      tl.set("#s4", { autoAlpha: 1 }, 8.0);
+
+      // ── Scene 1 (0–2s): glow emergence ─────────────────────────────
+      tl.from("#s1-glow", { scale: 0.35, autoAlpha: 0, duration: 1.8, ease: "sine.out" }, 0.1);
+      tl.to("#s1-glow", { scale: 1.08, duration: 1.0, ease: "sine.inOut" }, 1.0);
+
+      // ── Scene 2 (2–5.5s): title stagger, line draw, subtitle ────────
+      tl.from(".s2-char", {
+        y: 90,
+        autoAlpha: 0,
+        duration: 0.5,
+        ease: "power4.out",
+        stagger: { each: 0.1, from: "start" },
+      }, 2.2);
+      tl.to("#s2-line", { strokeDashoffset: 0, duration: 0.85, ease: "expo.out" }, 2.85);
+      tl.from("#s2-sub", { y: 16, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 3.05);
+      // mid-scene: title breathing float (finite repeat, not -1)
+      tl.to("#s2-title-wrap", { y: -7, duration: 1.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, 3.8);
+
+      // ── Scene 3 (5.5–8s): tagline entrance + highlight sweep ────────
+      tl.from("#s3-eyebrow", { y: 12, autoAlpha: 0, duration: 0.38, ease: "power2.out" }, 5.8);
+      tl.from("#s3-tagline", { y: 30, autoAlpha: 0, duration: 0.6, ease: "power3.out" }, 6.05);
+      tl.to("#s3-accent-word", { backgroundSize: "100% 2px", duration: 0.55, ease: "power2.out" }, 6.7);
+      // mid-scene: gentle tagline drift
+      tl.to("#s3-tagline", { y: -5, duration: 0.9, ease: "sine.inOut" }, 7.0);
+
+      // ── Scene 4 (8–10s): brand close ────────────────────────────────
+      tl.from("#s4-rule", { scaleX: 0, transformOrigin: "center", duration: 0.35, ease: "expo.out" }, 8.2);
+      tl.from("#s4-wordmark", { y: 22, autoAlpha: 0, duration: 0.5, ease: "power3.out" }, 8.45);
+      tl.from("#s4-sub", { y: 12, autoAlpha: 0, duration: 0.45, ease: "power2.out" }, 8.8);
+      // mid-scene: wordmark breathes
+      tl.to("#s4-wordmark", { y: -5, duration: 1.0, ease: "sine.inOut" }, 9.1);
+
+      // ── Shader: cinematic zoom at title → tagline ────────────────────
+      // Boundary: t=5.5  →  time = 5.5 − (0.5 / 2) = 5.25
+      window.HyperShader.init({
+        bgColor:
+          getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#080810",
+        scenes: ["s2", "s3"],
+        timeline: tl,
+        transitions: [{ time: 5.25, shader: "cinematic-zoom", duration: 0.5 }],
+      });
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
