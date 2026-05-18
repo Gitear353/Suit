@@ -181,9 +181,6 @@
       data-start="0"
       data-duration="10"
     >
-      <!-- Background music — supply music.mp3 in this folder; framework owns playback -->
-      <audio id="bg-music" src="./music.mp3" loop></audio>
-
       <!-- ── Scene 1: atmospheric open (0–2s) ──────────────────── -->
       <div class="scene clip" id="s1" data-start="0" data-duration="2" data-track-index="0">
         <div class="s1-glow-wrap"><div id="s1-glow"></div></div>
@@ -272,7 +269,7 @@
 
       // ── Scene 1 (0–2s): glow emergence ─────────────────────────────
       tl.from("#s1-glow", { scale: 0.35, autoAlpha: 0, duration: 1.8, ease: "sine.out" }, 0.1);
-      tl.to("#s1-glow", { scale: 1.08, duration: 1.0, ease: "sine.inOut" }, 1.0);
+      tl.to("#s1-glow", { opacity: 0.85, duration: 0.7, ease: "sine.inOut" }, 1.4);
 
       // ── Scene 2 (2–5.5s): title stagger, line draw, subtitle ────────
       tl.from(".s2-char", {
