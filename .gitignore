@@ -12,6 +12,7 @@ projects/*/previews/*.mp4
 projects/*/transcripts/*.json
 projects/*/_bundle_assets/
 projects/*/assets/speaker.mp4
+video-use/
 .hyperframes-cache/
 .DS_Store
 Thumbs.db
