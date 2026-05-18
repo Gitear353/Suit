@@ -4,9 +4,9 @@ node_modules/
 __pycache__/
 .venv/
 video-use/.venv/
-raw/*.mp4
-raw/*.mov
-raw/*.mkv
+raw/**/*.mp4
+raw/**/*.mov
+raw/**/*.mkv
 projects/*/renders/*.mp4
 projects/*/previews/*.mp4
 projects/*/transcripts/*.json
